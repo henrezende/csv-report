@@ -7,6 +7,8 @@
 # General application configuration
 import Config
 
+config :csv_report, CsvReport.Repo, migration_primary_key: [type: :uuid]
+
 config :csv_report,
   ecto_repos: [CsvReport.Repo]
 
