@@ -5,8 +5,10 @@ defmodule CsvReportWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", CsvReportWeb do
+  scope "/", CsvReportWeb do
     pipe_through :api
+
+    post("/csv_report/:report_name", CsvReportController, :create)
   end
 
   # Enables LiveDashboard only for development
