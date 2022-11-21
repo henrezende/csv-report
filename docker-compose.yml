@@ -25,3 +25,13 @@ services:
     expose:
       - 4000
     command: mix do deps.get, ecto.create, ecto.migrate, phx.server
+  tests:
+    build: .
+    depends_on:
+      - db
+    environment:
+      MIX_ENV: test
+    env_file:
+      - .env
+    volumes:
+      - .:/app

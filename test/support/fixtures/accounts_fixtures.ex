@@ -5,20 +5,6 @@ defmodule CsvReport.AccountsFixtures do
   """
 
   @doc """
-  Generate a partner.
-  """
-  def partner_fixture(attrs \\ %{}) do
-    {:ok, partner} =
-      attrs
-      |> Enum.into(%{
-        name: "some name"
-      })
-      |> CsvReport.Accounts.create_partner()
-
-    partner
-  end
-
-  @doc """
   Generate a registration.
   """
   def registration_fixture(attrs \\ %{}) do
@@ -31,6 +17,11 @@ defmodule CsvReport.AccountsFixtures do
       })
       |> CsvReport.Accounts.create_registration()
 
-    registration
+    %{
+      cpf: registration.cpf,
+      email: registration.email,
+      name: registration.name,
+      inserted_at: registration.inserted_at
+    }
   end
 end

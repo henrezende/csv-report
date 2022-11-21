@@ -8,7 +8,7 @@ import Config
 config :csv_report, CsvReport.Repo,
   username: "postgres",
   password: "postgres",
-  hostname: "localhost",
+  hostname: "db",
   database: "csv_report_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: 10
@@ -16,7 +16,7 @@ config :csv_report, CsvReport.Repo,
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :csv_report, CsvReportWeb.Endpoint,
-  http: [ip: {127, 0, 0, 1}, port: 4002],
+  http: [ip: {0, 0, 0, 0}, port: 4002],
   secret_key_base: "gcrvLPwubUcV3cWAmNDMct+Ah8qbtqUNHrclyqT9P0GcVEj7DE0KIcZhOzp1426a",
   server: false
 
