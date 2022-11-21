@@ -15,9 +15,11 @@ defmodule CsvReport.Accounts.Registration do
   end
 
   @doc false
+  @required_fields [:name, :cpf, :email]
   def changeset(registration, attrs) do
     registration
-    |> cast(attrs, [:name, :cpf, :email])
-    |> validate_required([:name, :cpf, :email])
+    |> cast(attrs, @required_fields)
+    |> cast_assoc(:partner)
+    |> validate_required(@required_fields)
   end
 end

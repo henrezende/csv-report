@@ -25,7 +25,7 @@ for item <- 1..30 do
 
   for item_reg <- 1..10 do
     Repo.insert!(%Registration{
-      name: "Partner #{item}#{item_reg}",
+      name: "Registration #{item}#{item_reg}",
       cpf: Integer.to_string(item + item_reg) |> String.pad_leading(10, "0"),
       email: "registration#{item}#{item_reg}@email.com",
       partner_id: partner.id
