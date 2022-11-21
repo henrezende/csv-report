@@ -10,19 +10,6 @@ defmodule CsvReport.Accounts do
   alias CsvReport.Accounts.Registration
 
   @doc """
-  Returns the list of partners.
-
-  ## Examples
-
-      iex> list_partners()
-      [%Partner{}, ...]
-
-  """
-  def list_partners do
-    Repo.all(Partner)
-  end
-
-  @doc """
   Creates a partner.
 
   ## Examples
@@ -45,19 +32,35 @@ defmodule CsvReport.Accounts do
 
   ## Examples
 
-      iex> list_registrations()
-      [%Registration{}, ...]
+      iex> list_daily_registrations(filters)
+      [%{}, ...]
 
   """
   def list_daily_registrations(filters) when filters == %{} do
-    Repo.all(from r in Registration, preload: [:partner])
+    Registration
+    |> join(:left, [reg], partner in assoc(reg, :partner))
+    |> select([reg, partner], %{
+      cpf: reg.cpf,
+      email: reg.email,
+      name: reg.name,
+      inserted_at: reg.inserted_at,
+      partner_name: partner.name
+    })
+    |> Repo.all()
   end
 
   def list_daily_registrations(filters) do
     Registration
-    |> where([q], q.inserted_at >= ^filters["start_date"])
-    |> where([q], q.inserted_at <= ^filters["end_date"])
-    |> preload([:partner])
+    |> where([reg], reg.inserted_at >= ^filters["start_date"])
+    |> where([reg], reg.inserted_at <= ^filters["end_date"])
+    |> join(:left, [reg], partner in assoc(reg, :partner))
+    |> select([reg, partner], %{
+      cpf: reg.cpf,
+      email: reg.email,
+      name: reg.name,
+      inserted_at: reg.inserted_at,
+      partner_name: partner.name
+    })
     |> Repo.all()
   end
 

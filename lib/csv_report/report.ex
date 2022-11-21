@@ -3,28 +3,14 @@ defmodule CsvReport.Report do
 
   def csv(report_name, filters) when report_name == "DailyRegistrations" do
     fields = [:name, :cpf, :email, :inserted_at]
-
     formatted_filters = get_formatted_filters(filters)
+    get_daily_registration_list(formatted_filters, fields)
+  end
 
-    case formatted_filters do
-      {:ok, filters} ->
-        daily_registrations =
-          Accounts.list_daily_registrations(filters)
-          |> Enum.map(fn record ->
-            record
-            |> Map.from_struct()
-            |> Map.take([])
-            |> Map.merge(Map.take(record, fields))
-          end)
-          |> CSV.encode(headers: fields)
-          |> Enum.to_list()
-          |> to_string()
-
-        {:ok, daily_registrations}
-
-      {:error, error} ->
-        {:error, error}
-    end
+  def csv(report_name, filters) when report_name == "DailyRegistrationsByPartner" do
+    fields = [:name, :cpf, :email, :inserted_at, :partner_name]
+    formatted_filters = get_formatted_filters(filters)
+    get_daily_registration_list(formatted_filters, fields)
   end
 
   defp get_formatted_filters(filters) when is_nil(filters) do
@@ -53,30 +39,21 @@ defmodule CsvReport.Report do
     end
   end
 
-  @doc """
-  Gets the content of a csv file with registrations data.
+  defp get_daily_registration_list(formatted_filters, fields) do
+    case formatted_filters do
+      {:ok, filters} ->
+        daily_registrations =
+          Accounts.list_daily_registrations(filters)
+          |> Enum.map(fn record ->
+            Map.merge(record, Map.take(record, fields))
+          end)
+          |> CSV.encode(headers: fields)
+          |> Enum.to_list()
 
-  ## Examples
+        {:ok, daily_registrations}
 
-      iex> get_registrations_csv_content([:name, :cpf])
-      "name,cpf\r\nPartner 1,0000000001\r\nPartner 2,0000000002"
-
-      iex> create_regiget_registrations_csv_contentstration([])
-      ""
-
-  """
-  # defp get_registrations_csv_content(report_name, filters) do
-  #   fields = [:name, :cpf, :email, :partner_id, :inserted_at]
-
-  #   Accounts.list_registrations()
-  #   |> Enum.map(fn record ->
-  #     record
-  #     |> Map.from_struct()
-  #     |> Map.take([])
-  #     |> Map.merge(Map.take(record, fields))
-  #   end)
-  #   |> CSV.encode(headers: fields)
-  #   |> Enum.to_list()
-  #   |> to_string()
-  # end
+      {:error, error} ->
+        {:error, error}
+    end
+  end
 end
