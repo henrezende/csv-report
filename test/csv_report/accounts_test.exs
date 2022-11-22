@@ -1,11 +1,9 @@
 defmodule CsvReport.AccountsTest do
   use CsvReport.DataCase
-
+  import CsvReport.AccountsFixtures
   alias CsvReport.Accounts
 
   describe "registrations" do
-    import CsvReport.AccountsFixtures
-
     test "list_daily_registrations with no filters returns all registrations" do
       registration = registration_fixture()
       list_daily_registrations = Accounts.list_daily_registrations(%{})
