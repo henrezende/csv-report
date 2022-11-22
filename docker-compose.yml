@@ -1,6 +1,7 @@
 version: '3.8'
 services:
   db:
+    container_name: db
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
@@ -11,6 +12,7 @@ services:
     ports:
       - "5432:5432"
   web:
+    container_name: web
     build: .
     depends_on:
       - db
@@ -26,6 +28,7 @@ services:
       - 4000
     command: mix do deps.get, ecto.create, ecto.migrate, phx.server
   tests:
+    container_name: tests
     build: .
     depends_on:
       - db
