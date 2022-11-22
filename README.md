@@ -1,19 +1,29 @@
 # CsvReport
 
-To start your Phoenix server:
+## Requisitos de sistema
 
-  * Install dependencies with `mix deps.get`
-  * Create and migrate your database with `mix ecto.setup`
-  * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
+- Docker
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+## Rodando a aplicação
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+- Inicie o container em modo desacoplado: `docker-compose up --build`
+- Rode as seeds: `docker exec -it web mix run priv/repo/seeds.exs`
+- A aplicação estará disponível em `localhost:4000`
 
-## Learn more
+### Rodando os tests
 
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+- Para rodar a suite completa de testes: `docker exec -it tests mix test`
+
+### Gerando o arquivo CSV
+
+- Endpoint: `POST /csv_report/:report_name`
+- Opções de `report_name`: "DailyRegistrations" e "DailyRegistrationsByPartner"
+- Caso deseje filtrar por range de data, o body da requisição deverá conter:
+  `{`
+      `"filters": {`
+          `"start_date": "YYYY-MM-DD",`
+          `"end_date": "YYYY-MM-DD"`
+      `}`
+  `}`
+
+  É necessário tanto `start_date` quanto `end_date`, caso seja usado o filtro.
