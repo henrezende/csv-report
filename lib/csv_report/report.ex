@@ -4,13 +4,13 @@ defmodule CsvReport.Report do
   def csv(report_name, filters) when report_name == "DailyRegistrations" do
     fields = [:name, :cpf, :email, :inserted_at]
     formatted_filters = get_formatted_filters(filters)
-    get_daily_registration_list(formatted_filters, fields)
+    get_daily_registration_list_csv(formatted_filters, fields, report_name)
   end
 
   def csv(report_name, filters) when report_name == "DailyRegistrationsByPartner" do
     fields = [:name, :cpf, :email, :inserted_at, :partner_name]
     formatted_filters = get_formatted_filters(filters)
-    get_daily_registration_list(formatted_filters, fields)
+    get_daily_registration_list_csv(formatted_filters, fields, report_name)
   end
 
   defp get_formatted_filters(filters) when is_nil(filters) do
@@ -39,11 +39,11 @@ defmodule CsvReport.Report do
     end
   end
 
-  defp get_daily_registration_list(formatted_filters, fields) do
+  defp get_daily_registration_list_csv(formatted_filters, fields, report_name) do
     case formatted_filters do
       {:ok, filters} ->
         daily_registrations =
-          Accounts.list_daily_registrations(filters)
+          get_daily_registration_list(filters, report_name)
           |> Enum.map(fn record ->
             Map.merge(record, Map.take(record, fields))
           end)
@@ -55,5 +55,15 @@ defmodule CsvReport.Report do
       {:error, error} ->
         {:error, error}
     end
+  end
+
+  defp get_daily_registration_list(filters, report_name)
+       when report_name == "DailyRegistrations" do
+    Accounts.list_daily_registrations(filters)
+  end
+
+  defp get_daily_registration_list(filters, report_name)
+       when report_name == "DailyRegistrationsByPartner" do
+    Accounts.list_daily_registrations_by_partner(filters)
   end
 end

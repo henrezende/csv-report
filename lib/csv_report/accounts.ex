@@ -39,6 +39,7 @@ defmodule CsvReport.Accounts do
   def list_daily_registrations(filters) when filters == %{} do
     Registration
     |> join(:left, [reg], partner in assoc(reg, :partner))
+    |> order_by(desc: :inserted_at)
     |> select([reg, partner], %{
       cpf: reg.cpf,
       email: reg.email,
@@ -54,6 +55,37 @@ defmodule CsvReport.Accounts do
     |> where([reg], reg.inserted_at >= ^filters["start_date"])
     |> where([reg], reg.inserted_at <= ^filters["end_date"])
     |> join(:left, [reg], partner in assoc(reg, :partner))
+    |> order_by(desc: :inserted_at)
+    |> select([reg, partner], %{
+      cpf: reg.cpf,
+      email: reg.email,
+      name: reg.name,
+      inserted_at: reg.inserted_at,
+      partner_name: partner.name
+    })
+    |> Repo.all()
+  end
+
+  def list_daily_registrations_by_partner(filters) when filters == %{} do
+    Registration
+    |> join(:left, [reg], partner in assoc(reg, :partner))
+    |> order_by([reg, partner], [{:asc, partner.name}, {:desc, reg.inserted_at}])
+    |> select([reg, partner], %{
+      cpf: reg.cpf,
+      email: reg.email,
+      name: reg.name,
+      inserted_at: reg.inserted_at,
+      partner_name: partner.name
+    })
+    |> Repo.all()
+  end
+
+  def list_daily_registrations_by_partner(filters) do
+    Registration
+    |> where([reg], reg.inserted_at >= ^filters["start_date"])
+    |> where([reg], reg.inserted_at <= ^filters["end_date"])
+    |> join(:left, [reg], partner in assoc(reg, :partner))
+    |> order_by([reg, partner], [{:asc, partner.name}, {:desc, reg.inserted_at}])
     |> select([reg, partner], %{
       cpf: reg.cpf,
       email: reg.email,
