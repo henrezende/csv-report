@@ -14,8 +14,8 @@ alias CsvReport.Repo
 alias CsvReport.Accounts.Partner
 alias CsvReport.Accounts.Registration
 
-Repo.delete_all(Partner)
 Repo.delete_all(Registration)
+Repo.delete_all(Partner)
 
 for item <- 1..30 do
   partner =
